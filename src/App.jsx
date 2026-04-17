@@ -18,12 +18,14 @@ function App() {
       const data = await response.json()
 
       const filtered = data.products.filter(
-        (p) => p.product_name && p.product_name.trim() !== ''
+        (p) =>
+          (p.product_name && p.product_name.trim() !== '') ||
+          (p.generic_name && p.generic_name.trim() !== '')
       )
 
       setResults(filtered)
     } catch (error) {
-      console.error(error)
+      console.error('Error fetching data:', error)
     } finally {
       setLoading(false)
     }
