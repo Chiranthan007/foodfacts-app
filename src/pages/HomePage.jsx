@@ -1,34 +1,16 @@
 import { useState } from 'react'
 import SearchBar from '../components/SearchBar'
 import FoodList from '../components/FoodList'
+import useFoodSearch from '../hooks/useFoodSearch'
 
 function HomePage() {
-  const [results, setResults] = useState([])
-  const [loading, setLoading] = useState(false)
   const [hasSearched, setHasSearched] = useState(false)
 
-  const handleSearch = async (query) => {
-    setLoading(true)
+  const { results, loading, error, searchFood } = useFoodSearch()
+
+  const handleSearch = (query) => {
     setHasSearched(true)
-
-    try {
-      const url = `https://world.openfoodfacts.org/cgi/search.pl?search_terms=${encodeURIComponent(query)}&json=1&page_size=10`
-
-      const response = await fetch(url)
-      const data = await response.json()
-
-      const filtered = data.products.filter(
-        (p) =>
-          (p.product_name && p.product_name.trim() !== '') ||
-          (p.generic_name && p.generic_name.trim() !== '')
-      )
-
-      setResults(filtered)
-    } catch (error) {
-      console.error('Error fetching data:', error)
-    } finally {
-      setLoading(false)
-    }
+    searchFood(query)
   }
 
   return (
@@ -41,11 +23,13 @@ function HomePage() {
 
       {loading && <p>Loading...</p>}
 
+      {error && <p>{error}</p>}
+
       {!loading && results.length > 0 && (
         <FoodList products={results} />
       )}
 
-      {!loading && hasSearched && results.length === 0 && (
+      {!loading && hasSearched && results.length === 0 && !error && (
         <p>No results found.</p>
       )}
     </div>
