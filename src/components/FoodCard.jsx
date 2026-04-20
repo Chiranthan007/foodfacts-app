@@ -1,20 +1,28 @@
-function FoodCard({ product }) {
-  const { product_name, generic_name, brands, nutriments, image_small_url } = product
+import { useNavigate } from 'react-router-dom'
 
-  // Clean product name (fallback + formatting)
+function FoodCard({ product }) {
+  const navigate = useNavigate()
+
+  const { product_name, generic_name, brands, nutriments, image_small_url, code } = product
+
   const name =
     (product_name || generic_name || "Unknown Product")
       .toLowerCase()
       .replace(/\b\w/g, (c) => c.toUpperCase())
 
-  // Clean calories (rounded)
   const calories =
     nutriments?.['energy-kcal_100g'] !== undefined
       ? Math.round(nutriments['energy-kcal_100g'])
       : "N/A"
 
+  const handleClick = () => {
+    if (code) {
+      navigate(`/product/${code}`)
+    }
+  }
+
   return (
-    <div className="food-card">
+    <div className="food-card" onClick={handleClick} style={{ cursor: 'pointer' }}>
       <img
         src={image_small_url || "https://via.placeholder.com/100"}
         alt={name}
