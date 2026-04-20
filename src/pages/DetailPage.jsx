@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import axios from 'axios'
 
-function DetailPage() {
+function DetailPage({ savedItems, dispatch }) {
   const { barcode } = useParams()
   const navigate = useNavigate()
 
@@ -48,6 +48,17 @@ function DetailPage() {
       ? Math.round(product.nutriments['energy-kcal_100g'])
       : "N/A"
 
+  // check if already saved
+  const isSaved = savedItems.some((item) => item.code === product.code)
+
+  const handleSave = () => {
+    dispatch({ type: 'ADD', payload: product })
+  }
+
+  const handleRemove = () => {
+    dispatch({ type: 'REMOVE', payload: product.code })
+  }
+
   return (
     <div>
       <button onClick={() => navigate(-1)}>← Back</button>
@@ -66,6 +77,13 @@ function DetailPage() {
       <p>Protein: {product.nutriments?.proteins_100g ?? "N/A"}</p>
       <p>Carbs: {product.nutriments?.carbohydrates_100g ?? "N/A"}</p>
       <p>Fat: {product.nutriments?.fat_100g ?? "N/A"}</p>
+
+      {/* Save / Remove Button */}
+      {!isSaved ? (
+        <button onClick={handleSave}>Save Product</button>
+      ) : (
+        <button onClick={handleRemove}>Remove from Saved</button>
+      )}
     </div>
   )
 }
