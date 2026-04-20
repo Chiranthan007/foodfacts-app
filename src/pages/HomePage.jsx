@@ -2,6 +2,7 @@ import { useState } from 'react'
 import SearchBar from '../components/SearchBar'
 import FoodList from '../components/FoodList'
 import useFoodSearch from '../hooks/useFoodSearch'
+import ErrorMessage from '../components/ErrorMessage'
 
 function HomePage() {
   const [hasSearched, setHasSearched] = useState(false)
@@ -23,7 +24,8 @@ function HomePage() {
 
       {loading && <p>Loading...</p>}
 
-      {error && <p>{error}</p>}
+      {/* Error UI */}
+      <ErrorMessage message={error} />
 
       {!loading && results.length > 0 && (
         <FoodList products={results} />
