@@ -48,7 +48,6 @@ function DetailPage({ savedItems, dispatch }) {
       ? Math.round(product.nutriments['energy-kcal_100g'])
       : "N/A"
 
-  // check if already saved
   const isSaved = savedItems.some((item) => item.code === product.code)
 
   const handleSave = () => {
@@ -60,8 +59,10 @@ function DetailPage({ savedItems, dispatch }) {
   }
 
   return (
-    <div>
-      <button onClick={() => navigate(-1)}>← Back</button>
+    <div className="detail-container">
+      <button className="back-btn" onClick={() => navigate(-1)}>
+        ← Back
+      </button>
 
       <h1>{name}</h1>
 
@@ -78,7 +79,6 @@ function DetailPage({ savedItems, dispatch }) {
       <p>Carbs: {product.nutriments?.carbohydrates_100g ?? "N/A"}</p>
       <p>Fat: {product.nutriments?.fat_100g ?? "N/A"}</p>
 
-      {/* Save / Remove Button */}
       {!isSaved ? (
         <button onClick={handleSave}>Save Product</button>
       ) : (

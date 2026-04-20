@@ -16,7 +16,6 @@ function HomePage() {
 
   return (
     <div>
-      <h1>🥗 FoodFacts</h1>
 
       <SearchBar onSearch={handleSearch} />
 
