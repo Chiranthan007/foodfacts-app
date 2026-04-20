@@ -1,53 +1,20 @@
-import { useState } from 'react'
-import SearchBar from './components/SearchBar'
-import FoodList from './components/FoodList'
+import { Routes, Route } from 'react-router-dom'
+import NavBar from './components/NavBar'
+import HomePage from './pages/HomePage'
+import DetailPage from './pages/DetailPage'
+import SavedPage from './pages/SavedPage'
 
 function App() {
-  const [results, setResults] = useState([])
-  const [loading, setLoading] = useState(false)
-  const [hasSearched, setHasSearched] = useState(false)
-
-  const handleSearch = async (query) => {
-    setLoading(true)
-    setHasSearched(true)
-
-    try {
-      const url = `https://world.openfoodfacts.org/cgi/search.pl?search_terms=${encodeURIComponent(query)}&json=1&page_size=10`
-
-      const response = await fetch(url)
-      const data = await response.json()
-
-      const filtered = data.products.filter(
-        (p) =>
-          (p.product_name && p.product_name.trim() !== '') ||
-          (p.generic_name && p.generic_name.trim() !== '')
-      )
-
-      setResults(filtered)
-    } catch (error) {
-      console.error('Error fetching data:', error)
-    } finally {
-      setLoading(false)
-    }
-  }
-
   return (
     <div>
-      <h1>🥗 FoodFacts</h1>
-
-      <SearchBar onSearch={handleSearch} />
-
-      {!hasSearched && <p>Search for a food to begin.</p>}
-
-      {loading && <p>Loading...</p>}
-
-      {!loading && results.length > 0 && (
-        <FoodList products={results} />
-      )}
-
-      {!loading && hasSearched && results.length === 0 && (
-        <p>No results found.</p>
-      )}
+      <NavBar />
+      <main>
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/product/:barcode" element={<DetailPage />} />
+          <Route path="/saved" element={<SavedPage />} />
+        </Routes>
+      </main>
     </div>
   )
 }
