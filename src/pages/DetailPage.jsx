@@ -1,10 +1,15 @@
 import { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
+import { useSelector, useDispatch } from 'react-redux'
+import { addItem, removeItem } from '../store/savedSlice'
 import axios from 'axios'
 
-function DetailPage({ savedItems, dispatch }) {
+function DetailPage() {
   const { barcode } = useParams()
   const navigate = useNavigate()
+
+  const dispatch = useDispatch()
+  const savedItems = useSelector((state) => state.saved.items)
 
   const [product, setProduct] = useState(null)
   const [loading, setLoading] = useState(false)
@@ -50,12 +55,12 @@ function DetailPage({ savedItems, dispatch }) {
 
   const isSaved = savedItems.some((item) => item.code === product.code)
 
-  const handleSave = () => {
-    dispatch({ type: 'ADD', payload: product })
-  }
-
-  const handleRemove = () => {
-    dispatch({ type: 'REMOVE', payload: product.code })
+  const handleSaveToggle = () => {
+    if (isSaved) {
+      dispatch(removeItem(product.code))
+    } else {
+      dispatch(addItem(product))
+    }
   }
 
   return (
@@ -79,11 +84,9 @@ function DetailPage({ savedItems, dispatch }) {
       <p>Carbs: {product.nutriments?.carbohydrates_100g ?? "N/A"}</p>
       <p>Fat: {product.nutriments?.fat_100g ?? "N/A"}</p>
 
-      {!isSaved ? (
-        <button onClick={handleSave}>Save Product</button>
-      ) : (
-        <button onClick={handleRemove}>Remove from Saved</button>
-      )}
+      <button onClick={handleSaveToggle}>
+        {isSaved ? "Remove from Saved" : "Save Product"}
+      </button>
     </div>
   )
 }
