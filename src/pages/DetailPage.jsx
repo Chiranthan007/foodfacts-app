@@ -4,6 +4,15 @@ import { useSelector, useDispatch } from 'react-redux'
 import { addItem, removeItem } from '../store/savedSlice'
 import axios from 'axios'
 
+import {
+  Card,
+  CardContent,
+  CardMedia,
+  Typography,
+  Button,
+  Box
+} from '@mui/material'
+
 function DetailPage() {
   const { barcode } = useParams()
   const navigate = useNavigate()
@@ -29,7 +38,7 @@ function DetailPage() {
         } else {
           setError("Product not found.")
         }
-      } catch (err) {
+      } catch {
         setError("Failed to fetch product details.")
       } finally {
         setLoading(false)
@@ -55,7 +64,7 @@ function DetailPage() {
 
   const isSaved = savedItems.some((item) => item.code === product.code)
 
-  const handleSaveToggle = () => {
+  const handleToggle = () => {
     if (isSaved) {
       dispatch(removeItem(product.code))
     } else {
@@ -64,30 +73,59 @@ function DetailPage() {
   }
 
   return (
-    <div className="detail-container">
-      <button className="back-btn" onClick={() => navigate(-1)}>
-        ← Back
-      </button>
+    <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
+      <Card sx={{ maxWidth: 400 }}>
+        <CardMedia
+          component="img"
+          height="200"
+          image={product.image_small_url || "https://via.placeholder.com/150"}
+          alt={name}
+        />
 
-      <h1>{name}</h1>
+        <CardContent>
+          <Typography variant="h5" gutterBottom>
+            {name}
+          </Typography>
 
-      <img
-        src={product.image_small_url || "https://via.placeholder.com/150"}
-        alt={name}
-      />
+          <Typography variant="body2">
+            <strong>Brand:</strong> {product.brands || "N/A"}
+          </Typography>
 
-      <p><strong>Brand:</strong> {product.brands || "Not available"}</p>
+          <Typography variant="h6" sx={{ mt: 2 }}>
+            Nutrition (per 100g)
+          </Typography>
 
-      <h3>Nutrition (per 100g)</h3>
-      <p>Calories: {calories}</p>
-      <p>Protein: {product.nutriments?.proteins_100g ?? "N/A"}</p>
-      <p>Carbs: {product.nutriments?.carbohydrates_100g ?? "N/A"}</p>
-      <p>Fat: {product.nutriments?.fat_100g ?? "N/A"}</p>
+          <Typography variant="body2">Calories: {calories}</Typography>
+          <Typography variant="body2">
+            Protein: {product.nutriments?.proteins_100g ?? "N/A"}
+          </Typography>
+          <Typography variant="body2">
+            Carbs: {product.nutriments?.carbohydrates_100g ?? "N/A"}
+          </Typography>
+          <Typography variant="body2">
+            Fat: {product.nutriments?.fat_100g ?? "N/A"}
+          </Typography>
 
-      <button onClick={handleSaveToggle}>
-        {isSaved ? "Remove from Saved" : "Save Product"}
-      </button>
-    </div>
+          <Button
+            variant="contained"
+            fullWidth
+            sx={{ mt: 2 }}
+            onClick={handleToggle}
+          >
+            {isSaved ? "Remove from Saved" : "Save Product"}
+          </Button>
+
+          <Button
+            variant="text"
+            fullWidth
+            sx={{ mt: 1 }}
+            onClick={() => navigate(-1)}
+          >
+            Back
+          </Button>
+        </CardContent>
+      </Card>
+    </Box>
   )
 }
 
