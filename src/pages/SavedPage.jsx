@@ -1,40 +1,57 @@
-import { useNavigate } from 'react-router-dom'
+import { useSelector, useDispatch } from 'react-redux'
+import { removeItem } from '../store/savedSlice'
+import { Link } from 'react-router-dom'
 
-function SavedPage({ savedItems, dispatch }) {
-  const navigate = useNavigate()
+function SavedPage() {
+  const dispatch = useDispatch()
+  const savedItems = useSelector((state) => state.saved.items)
 
   if (savedItems.length === 0) {
-    return <p>No saved items yet.</p>
+    return (
+      <div className="page">
+        <h2>Saved Items</h2>
+        <p>No saved items yet.</p>
+      </div>
+    )
   }
 
   return (
-    <div>
+    <div className="page">
       <h2>Saved Items</h2>
 
-      {savedItems.map((product) => {
-        const name =
-          (product.product_name || product.generic_name || "Unknown Product")
-            .toLowerCase()
-            .replace(/\b\w/g, (c) => c.toUpperCase())
+      <div className="food-list">
+        {savedItems.map((item) => {
+          const name =
+            (item.product_name || item.generic_name || "Unknown Product")
+              .toLowerCase()
+              .replace(/\b\w/g, (c) => c.toUpperCase())
 
-        return (
-          <div key={product.code} className="food-card">
-            <h3>{name}</h3>
+          return (
+            <div key={item.code} className="food-card">
+              <img
+                src={item.image_small_url || "https://via.placeholder.com/100"}
+                alt={name}
+              />
 
-            <button onClick={() => navigate(`/product/${product.code}`)}>
-              View Details
-            </button>
+              <h3>{name}</h3>
 
-            <button
-              onClick={() =>
-                dispatch({ type: 'REMOVE', payload: product.code })
-              }
-            >
-              Remove
-            </button>
-          </div>
-        )
-      })}
+              <p><strong>Brand:</strong> {item.brands || "N/A"}</p>
+
+              <div style={{ marginTop: "10px" }}>
+                <Link to={`/product/${item.code}`}>
+                  <button style={{ marginRight: "10px" }}>
+                    View
+                  </button>
+                </Link>
+
+                <button onClick={() => dispatch(removeItem(item.code))}>
+                  Remove
+                </button>
+              </div>
+            </div>
+          )
+        })}
+      </div>
     </div>
   )
 }
