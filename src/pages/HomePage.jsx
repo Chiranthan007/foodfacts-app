@@ -19,7 +19,10 @@ function HomePage() {
 
       <SearchBar onSearch={handleSearch} />
 
-      {!hasSearched && <p>Search for a food to begin.</p>}
+      <div style={{ textAlign: 'center', marginTop: '40px', color: '#666' }}>
+        <h3>Start exploring food</h3>
+        <p>Search for a product to see nutrition details</p>
+      </div>
 
       {loading && <p>Loading...</p>}
 
