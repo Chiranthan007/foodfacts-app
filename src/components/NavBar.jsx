@@ -1,3 +1,4 @@
+import { AppBar, Toolbar, Typography, Box } from '@mui/material'
 import { NavLink } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 
@@ -5,14 +6,25 @@ function NavBar() {
   const savedCount = useSelector((state) => state.saved.items.length)
 
   return (
-    <nav className="navbar">
-      <h2 className="logo">🥗 FoodFacts</h2>
+    <AppBar position="static">
+      <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
+        
+        <Typography variant="h6">
+          🥗 FoodFacts
+        </Typography>
 
-      <div className="nav-links">
-        <NavLink to="/">Search</NavLink>
-        <NavLink to="/saved">Saved ({savedCount})</NavLink>
-      </div>
-    </nav>
+        <Box>
+          <NavLink to="/" style={{ color: 'white', marginRight: '20px', textDecoration: 'none' }}>
+            Search
+          </NavLink>
+
+          <NavLink to="/saved" style={{ color: 'white', textDecoration: 'none' }}>
+            Saved ({savedCount})
+          </NavLink>
+        </Box>
+
+      </Toolbar>
+    </AppBar>
   )
 }
 
